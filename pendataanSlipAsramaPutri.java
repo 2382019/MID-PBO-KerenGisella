@@ -161,6 +161,21 @@ public class pendataanSlipAsramaPutri {
     }
 
     public static void dashboardStatistik() {
+          System.out.println("\nDASHBOARD STATISTIK");
+        int totalSlipKeluar = 0;
+        int totalSlipWeekend = 0;
+
+        for (Slip slip : daftarSlip) {
+            if (slip.jenisSlip.equalsIgnoreCase("Keluar")) {
+                totalSlipKeluar++;
+            } else if (slip.jenisSlip.equalsIgnoreCase("Weekend")) {
+                totalSlipWeekend++;
+            }
+        }
+
+        System.out.println("Total Slip Keluar: " + totalSlipKeluar);
+        System.out.println("Total Slip Weekend: " + totalSlipWeekend);
+    }
 
     }
 
