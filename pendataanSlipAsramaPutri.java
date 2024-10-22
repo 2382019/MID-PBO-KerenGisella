@@ -175,8 +175,61 @@ public class pendataanSlipAsramaPutri {
 
         System.out.println("Total Slip Keluar: " + totalSlipKeluar);
         System.out.println("Total Slip Weekend: " + totalSlipWeekend);
-    }
 
+        System.out.println("\n1. Edit Slip");
+        System.out.println("2. Kembali ke Menu Utama");
+
+        String pilihan = input("Pilih opsi");
+
+        switch (pilihan) {
+            case "1":
+                editSlip();
+                break;
+            case "2":
+                return;
+            default:
+                System.out.println("Pilihan tidak valid");
+        }
+    }
+
+    public static void editSlip() {
+        System.out.println("\nEDIT SLIP");
+        if (daftarSlip.isEmpty()) {
+            System.out.println("Tidak ada slip yang dapat diedit.");
+            return;
+        }
+
+        System.out.println("Daftar Slip:");
+        for (int i = 0; i < daftarSlip.size(); i++) {
+            Slip slip = daftarSlip.get(i);
+            System.out.println((i+1) + ". " + slip.mahasiswi.nama + " - " + slip.jenisSlip + " - " + slip.alasan);
+        }
+
+        int pilihan = Integer.parseInt(input("Pilih nomor slip untuk diedit")) - 1;
+        if (pilihan < 0 || pilihan >= daftarSlip.size()) {
+            System.out.println("Pilihan tidak valid.");
+            return;
+        }
+
+        Slip slip = daftarSlip.get(pilihan);
+        System.out.println("Editing slip untuk: " + slip.mahasiswi.nama);
+
+        slip.jenisSlip = input("Jenis slip (Keluar/Weekend) [" + slip.jenisSlip + "]");
+        slip.alasan = input("Alasan [" + slip.alasan + "]");
+        String tanggalKeluar = input("Tanggal keluar (dd-MM-yyyy) [" + slip.tanggalKeluar.split(" ")[0] + "]");
+        String waktuKeluar = input("Waktu keluar (HH:mm) [" + slip.tanggalKeluar.split(" ")[1] + "]");
+
+        slip.tanggalKeluar = tanggalKeluar + " " + waktuKeluar;
+
+        if (slip.statusPersetujuan) {
+            String ubahStatus = input("Ubah status persetujuan? (y/n)");
+            if (ubahStatus.equalsIgnoreCase("y")) {
+                slip.statusPersetujuan = false;
+                System.out.println("Status persetujuan diubah menjadi: Menunggu Persetujuan");
+            }
+        }
+
+        System.out.println("Slip berhasil diubah.");
     }
 
     public static void pencarianDanFilterSlip() {
