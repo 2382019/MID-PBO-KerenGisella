@@ -74,6 +74,32 @@ public class pendataanSlipAsramaPutri {
     }
 
     public static void pengajuanSlip() { // Karenina
+        if (daftarMahasiswi.isEmpty()) {
+            System.out.println("Belum terdaftar. Silakan daftar terlebih dahulu.");
+            return;
+        }
+
+        System.out.println("Daftar Mahasiswi:");
+        for (int i = 0; i < daftarMahasiswi.size(); i++) {
+            System.out.println((i+1) + ". " + daftarMahasiswi.get(i).nama);
+        }
+
+        int pilihan = Integer.parseInt(input("Pilih nomor mahasiswi")) - 1;
+        if (pilihan < 0 || pilihan >= daftarMahasiswi.size()) {
+            System.out.println("Pilihan tidak valid.");
+            return;
+        }
+
+        Mahasiswi mahasiswi = daftarMahasiswi.get(pilihan);
+        String jenisSlip = input("Jenis slip (Keluar/Weekend)");
+        String alasan = input("Alasan");
+        String tanggalKeluar = input("Tanggal keluar (dd-MM-yyyy)");
+        String waktuKeluar = input("Waktu keluar (HH:mm)");
+
+        String tanggalWaktuKeluar = tanggalKeluar + " " + waktuKeluar;
+        Slip slip = new Slip(mahasiswi, jenisSlip, alasan, tanggalWaktuKeluar);
+        daftarSlip.add(slip);
+        System.out.println("Slip berhasil diajukan dan menunggu persetujuan.");
     }
 
     public static void persetujuanPengurusAsrama() { // Gisella
@@ -135,73 +161,141 @@ public class pendataanSlipAsramaPutri {
     }
 
     public static void dashboardStatistik() {
+        System.out.println("\nDASHBOARD STATISTIK");
+        int totalSlipKeluar = 0;
+        int totalSlipWeekend = 0;
 
-    }
+        for (Slip slip : daftarSlip) {
+            if (slip.jenisSlip.equalsIgnoreCase("Keluar")) {
+                totalSlipKeluar++;
+            } else if (slip.jenisSlip.equalsIgnoreCase("Weekend")) {
+                totalSlipWeekend++;
+            }
+        }
 
-    public static void pencarianDanFilterSlip() {
-        System.out.println("\nPENCARIAN DAN FILTER SLIP");
-        System.out.println("1. Filter berdasarkan jenis slip");
-        System.out.println("2. Filter berdasarkan status persetujuan");
+        System.out.println("Total Slip Keluar: " + totalSlipKeluar);
+        System.out.println("Total Slip Weekend: " + totalSlipWeekend);
 
-        String pilihan = input("Pilih opsi pencarian/filter");
+        System.out.println("\n1. Edit Slip");
+        System.out.println("2. Kembali ke Menu Utama");
+
+        String pilihan = input("Pilih opsi");
 
         switch (pilihan) {
             case "1":
-                filterSlipBerdasarkanJenis();
+                editSlip();
                 break;
             case "2":
-                filterSlipBerdasarkanStatus();
-                break;
+                return;
             default:
                 System.out.println("Pilihan tidak valid");
         }
     }
 
-    private static void filterSlipBerdasarkanJenis() {
-        String jenisSlip = input("Masukkan jenis slip (Keluar/Weekend)");
-        boolean ditemukan = false;
-        for (Slip slip : daftarSlip) {
-            if (slip.jenisSlip.equalsIgnoreCase(jenisSlip)) {
-                tampilkanInfoSlip(slip);
-                ditemukan = true;
+    public static void editSlip() {
+        System.out.println("\nEDIT SLIP");
+        if (daftarSlip.isEmpty()) {
+            System.out.println("Tidak ada slip yang dapat diedit.");
+            return;
+        }
+
+        System.out.println("Daftar Slip:");
+        for (int i = 0; i < daftarSlip.size(); i++) {
+            Slip slip = daftarSlip.get(i);
+            System.out.println((i+1) + ". " + slip.mahasiswi.nama + " - " + slip.jenisSlip + " - " + slip.alasan);
+        }
+
+        int pilihan = Integer.parseInt(input("Pilih nomor slip untuk diedit")) - 1;
+        if (pilihan < 0 || pilihan >= daftarSlip.size()) {
+            System.out.println("Pilihan tidak valid.");
+            return;
+        }
+
+        Slip slip = daftarSlip.get(pilihan);
+        System.out.println("Editing slip untuk: " + slip.mahasiswi.nama);
+
+        slip.jenisSlip = input("Jenis slip (Keluar/Weekend) [" + slip.jenisSlip + "]");
+        slip.alasan = input("Alasan [" + slip.alasan + "]");
+        String tanggalKeluar = input("Tanggal keluar (dd-MM-yyyy) [" + slip.tanggalKeluar.split(" ")[0] + "]");
+        String waktuKeluar = input("Waktu keluar (HH:mm) [" + slip.tanggalKeluar.split(" ")[1] + "]");
+
+        slip.tanggalKeluar = tanggalKeluar + " " + waktuKeluar;
+
+        if (slip.statusPersetujuan) {
+            String ubahStatus = input("Ubah status persetujuan? (y/n)");
+            if (ubahStatus.equalsIgnoreCase("y")) {
+                slip.statusPersetujuan = false;
+                System.out.println("Status persetujuan diubah menjadi: Menunggu Persetujuan");
             }
         }
-        if (!ditemukan) {
-            System.out.println("Tidak ada slip dengan jenis tersebut.");
-        }
+
+        System.out.println("Slip berhasil diubah.");
     }
 
-    private static void filterSlipBerdasarkanStatus() {
-        String status = input("Masukkan status (Disetujui/Menunggu)");
-        boolean statusPersetujuan = status.equalsIgnoreCase("Disetujui");
-        boolean ditemukan = false;
-        for (Slip slip : daftarSlip) {
-            if (slip.statusPersetujuan == statusPersetujuan) {
-                tampilkanInfoSlip(slip);
-                ditemukan = true;
-            }
-        }
-        if (!ditemukan) {
-            System.out.println("Tidak ada slip dengan status tersebut.");
-        }
-    }
+public static void pencarianDanFilterSlip() {
+    System.out.println("\nPENCARIAN DAN FILTER SLIP");
+    System.out.println("1. Filter berdasarkan jenis slip");
+    System.out.println("2. Filter berdasarkan status persetujuan");
 
-    private static void tampilkanInfoSlip(Slip slip) {
-        System.out.println("Nama: " + slip.mahasiswi.nama);
-        System.out.println("Jenis Slip: " + slip.jenisSlip);
-        System.out.println("Alasan: " + slip.alasan);
-        System.out.println("Tanggal dan Waktu Keluar: " + slip.tanggalKeluar);
-        System.out.println("Status: " + (slip.statusPersetujuan ? "Disetujui" : "Menunggu Persetujuan"));
-        if (slip.waktuKembali != null) {
-            System.out.println("Tanggal dan Waktu Kembali: " + slip.waktuKembali);
-        }
-        System.out.println("--------------------");
-    }
+    String pilihan = input("Pilih opsi pencarian/filter");
 
-    public static String input(String info) {
-        System.out.print(info + " : ");
-        return scanner.nextLine();
+    switch (pilihan) {
+        case "1":
+            filterSlipBerdasarkanJenis();
+            break;
+        case "2":
+            filterSlipBerdasarkanStatus();
+            break;
+        default:
+            System.out.println("Pilihan tidak valid");
     }
+}
+
+private static void filterSlipBerdasarkanJenis() {
+    String jenisSlip = input("Masukkan jenis slip (Keluar/Weekend)");
+    boolean ditemukan = false;
+    for (Slip slip : daftarSlip) {
+        if (slip.jenisSlip.equalsIgnoreCase(jenisSlip)) {
+            tampilkanInfoSlip(slip);
+            ditemukan = true;
+        }
+    }
+    if (!ditemukan) {
+        System.out.println("Tidak ada slip dengan jenis tersebut.");
+    }
+}
+
+private static void filterSlipBerdasarkanStatus() {
+    String status = input("Masukkan status (Disetujui/Menunggu)");
+    boolean statusPersetujuan = status.equalsIgnoreCase("Disetujui");
+    boolean ditemukan = false;
+    for (Slip slip : daftarSlip) {
+        if (slip.statusPersetujuan == statusPersetujuan) {
+            tampilkanInfoSlip(slip);
+            ditemukan = true;
+        }
+    }
+    if (!ditemukan) {
+        System.out.println("Tidak ada slip dengan status tersebut.");
+    }
+}
+
+private static void tampilkanInfoSlip(Slip slip) {
+    System.out.println("Nama: " + slip.mahasiswi.nama);
+    System.out.println("Jenis Slip: " + slip.jenisSlip);
+    System.out.println("Alasan: " + slip.alasan);
+    System.out.println("Tanggal dan Waktu Keluar: " + slip.tanggalKeluar);
+    System.out.println("Status: " + (slip.statusPersetujuan ? "Disetujui" : "Menunggu Persetujuan"));
+    if (slip.waktuKembali != null) {
+        System.out.println("Tanggal dan Waktu Kembali: " + slip.waktuKembali);
+    }
+    System.out.println("--------------------");
+}
+
+public static String input(String info) {
+    System.out.print(info + " : ");
+    return scanner.nextLine();
+}
 }
 
 class Mahasiswi {
