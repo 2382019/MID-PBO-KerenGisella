@@ -74,6 +74,32 @@ public class pendataanSlipAsramaPutri {
     }
 
     public static void pengajuanSlip() { // Karenina
+        if (daftarMahasiswi.isEmpty()) {
+            System.out.println("Belum terdaftar. Silakan daftar terlebih dahulu.");
+            return;
+        }
+
+        System.out.println("Daftar Mahasiswi:");
+        for (int i = 0; i < daftarMahasiswi.size(); i++) {
+            System.out.println((i+1) + ". " + daftarMahasiswi.get(i).nama);
+        }
+
+        int pilihan = Integer.parseInt(input("Pilih nomor mahasiswi")) - 1;
+        if (pilihan < 0 || pilihan >= daftarMahasiswi.size()) {
+            System.out.println("Pilihan tidak valid.");
+            return;
+        }
+
+        Mahasiswi mahasiswi = daftarMahasiswi.get(pilihan);
+        String jenisSlip = input("Jenis slip (Keluar/Weekend)");
+        String alasan = input("Alasan");
+        String tanggalKeluar = input("Tanggal keluar (dd-MM-yyyy)");
+        String waktuKeluar = input("Waktu keluar (HH:mm)");
+
+        String tanggalWaktuKeluar = tanggalKeluar + " " + waktuKeluar;
+        Slip slip = new Slip(mahasiswi, jenisSlip, alasan, tanggalWaktuKeluar);
+        daftarSlip.add(slip);
+        System.out.println("Slip berhasil diajukan dan menunggu persetujuan.");
     }
 
     public static void persetujuanPengurusAsrama() { // Gisella
@@ -135,7 +161,20 @@ public class pendataanSlipAsramaPutri {
     }
 
     public static void dashboardStatistik() {
+        System.out.println("\nDASHBOARD STATISTIK");
+        int totalSlipKeluar = 0;
+        int totalSlipWeekend = 0;
 
+        for (Slip slip : daftarSlip) {
+            if (slip.jenisSlip.equalsIgnoreCase("Keluar")) {
+                totalSlipKeluar++;
+            } else if (slip.jenisSlip.equalsIgnoreCase("Weekend")) {
+                totalSlipWeekend++;
+            }
+        }
+
+        System.out.println("Total Slip Keluar: " + totalSlipKeluar);
+        System.out.println("Total Slip Weekend: " + totalSlipWeekend);
     }
 
     public static void pencarianDanFilterSlip() {

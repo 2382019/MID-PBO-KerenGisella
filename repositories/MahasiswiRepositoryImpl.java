@@ -12,6 +12,11 @@ public class MahasiswiRepositoryImpl implements MahasiswiRepository{
     }
 
     @Override
+    public void addMahasiswi(Mahasiswi mahasiswi) {
+
+    }
+
+    @Override
     public void add (Mahasiswi mahasiswi) {
         mahasiswiList.add(mahasiswi);
     }
