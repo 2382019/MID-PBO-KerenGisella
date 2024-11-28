@@ -1,88 +1,81 @@
 package services;
 
 import entities.Slip;
+import entities.Mahasiswi;
+import java.util.List;
 import java.util.ArrayList;
 
-public class SlipServiceImpl implements SlipService{
-    private ArrayList<Slip> daftarSlip;
-
-    public SlipServiceImpl(ArrayList<Slip> daftarSlip) {
-        this.daftarSlip = daftarSlip;
-    }
+public class SlipServiceImpl implements SlipService {
+    private List<Slip> daftarSlip = new ArrayList<>();
 
     @Override
-    public void submitSlip(Slip slip) {
-        if (slip == null || slip.getJenisSlip().isBlank() || slip.getAlasan().isBlank()) {
-            System.out.println("Data Slip tidak lengkap.");
-            return;
-        }
+    public void submitSlip(Mahasiswi mahasiswi, String jenisSlip, String alasan, String tanggalKeluar) {
+        Slip slip = new Slip(mahasiswi, jenisSlip, alasan, tanggalKeluar);
         daftarSlip.add(slip);
         System.out.println("Slip berhasil diajukan.");
     }
 
     @Override
-    public Boolean approveSlip(Integer slipId) {
+    public void approveSlip(int slipIndex) {
+        if (slipIndex >= 0 && slipIndex < daftarSlip.size()) {
+            Slip slip = daftarSlip.get(slipIndex);
+            slip.statusPersetujuan = true;
+            System.out.println("Slip disetujui.");
+        } else {
+            System.out.println("Nomor slip tidak valid.");
+        }
+    }
+
+    @Override
+    public List<Slip> getPendingSlips() {
+        List<Slip> pendingSlips = new ArrayList<>();
         for (Slip slip : daftarSlip) {
-            if (slip.getMahasiswi().getNomorKamar().hashCode() == slipId) { // Assuming slipId is based on Mahasiswi's nomorKamar
-                slip.setStatusPersetujuan(true);
-                System.out.println("Slip telah disetujui.");
-                return true;
+            if (!slip.statusPersetujuan) {
+                pendingSlips.add(slip);
             }
         }
-        System.out.println("Slip dengan ID tersebut tidak ditemukan.");
-        return false;
+        return pendingSlips;
     }
 
     @Override
-    public Boolean rejectSLip(Integer id) {
-        return null;
-    }
-
-    @Override
-    public Boolean rejectSlip(Integer slipId) {
+    public void viewSlipNotifications() {
         for (Slip slip : daftarSlip) {
-            if (slip.getMahasiswi().getNomorKamar().hashCode() == slipId) { // Assuming slipId is based on Mahasiswi's nomorKamar
-                slip.setStatusPersetujuan(false);
-                System.out.println("Slip telah ditolak.");
-                return true;
-            }
+            System.out.println(slip.mahasiswi.nama + " - " + slip.jenisSlip + ": " +
+                    (slip.statusPersetujuan ? "Disetujui" : "Menunggu Persetujuan"));
         }
-        System.out.println("Slip dengan ID tersebut tidak ditemukan.");
-        return false;
     }
 
     @Override
-    public Boolean recordReturnTime(Integer slipId, String tanggalKembali, String waktuKembali) {
-        for (Slip slip : daftarSlip) {
-            if (slip.getMahasiswi().getNomorKamar().hashCode() == slipId) { // Assuming slipId is based on Mahasiswi's nomorKamar
-                slip.setWaktuKembali(tanggalKembali + " " + waktuKembali);
-                System.out.println("Waktu kembali berhasil dicatat.");
-                return true;
-            }
+    public void recordReturnTime(int slipIndex, String tanggalKembali, String waktuKembali) {
+        if (slipIndex >= 0 && slipIndex < daftarSlip.size()) {
+            Slip slip = daftarSlip.get(slipIndex);
+            String tanggalWaktuKembali = tanggalKembali + " " + waktuKembali;
+            slip.waktuKembali = tanggalWaktuKembali;
+            System.out.println("Waktu kembali berhasil dicatat.");
+        } else {
+            System.out.println("Nomor slip tidak valid.");
         }
-        System.out.println("Slip dengan ID tersebut tidak ditemukan.");
-        return false;
     }
 
     @Override
-    public Slip[] filterSlipsByType(String jenisSlip) {
-        ArrayList<Slip> filteredSlips = new ArrayList<>();
+    public List<Slip> filterSlipsByType(String jenisSlip) {
+        List<Slip> filteredSlips = new ArrayList<>();
         for (Slip slip : daftarSlip) {
-            if (slip.getJenisSlip().equalsIgnoreCase(jenisSlip)) {
+            if (slip.jenisSlip.equalsIgnoreCase(jenisSlip)) {
                 filteredSlips.add(slip);
             }
         }
-        return filteredSlips.toArray(new Slip[0]);
+        return filteredSlips;
     }
 
     @Override
-    public Slip[] filterSlipsByApprovalStatus(Boolean isApproved) {
-        ArrayList<Slip> filteredSlips = new ArrayList<>();
+    public List<Slip> filterSlipsByStatus(boolean status) {
+        List<Slip> filteredSlips = new ArrayList<>();
         for (Slip slip : daftarSlip) {
-            if (slip.isStatusPersetujuan() == isApproved) {
+            if (slip.statusPersetujuan == status) {
                 filteredSlips.add(slip);
             }
         }
-        return filteredSlips.toArray(new Slip[0]);
+        return filteredSlips;
     }
 }

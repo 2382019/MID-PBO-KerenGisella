@@ -1,12 +1,12 @@
 package services;
 
 import entities.Mahasiswi;
+import java.util.List;
 
 public interface MahasiswiService {
-    void addMahasiswi(Mahasiswi mahasiswi);
+    // Method to register a new Mahasiswi account
+    void registerMahasiswi(String nama, String asrama, String nomorKamar);
 
-    void registerMahasiswi (String nama, String asrama, String nomorKamar);
-    Mahasiswi[] getAllMahasiswi();
-    Boolean remove Mahasiswi(Integer id);
-    Boolean editMahasiswi (Integer id, String nama, String asrama, String nomorKamar);
+    // Method to get all Mahasiswi
+    List<Mahasiswi> getAllMahasiswi();
 }

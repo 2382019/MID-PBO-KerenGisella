@@ -1,37 +1,21 @@
 package services;
 
 import entities.Mahasiswi;
+import java.util.List;
 import java.util.ArrayList;
 
 public class MahasiswiServiceImpl implements MahasiswiService {
-    private ArrayList<Mahasiswi> daftarMahasiswi;
-
-    public MahasiswiServiceImpl(ArrayList<Mahasiswi> daftarMahasiswi) {
-        this.daftarMahasiswi = daftarMahasiswi;
-    }
-
-    @Override
-    public void addMahasiswi(Mahasiswi mahasiswi) {
-        if (mahasiswi == null || mahasiswi.getNama().isBlank() || mahasiswi.getNomorKamar().isBlank()) {
-            System.out.println("Data Mahasiswi tidak valid.");
-            return;
-        }
-        daftarMahasiswi.add(mahasiswi);
-        System.out.println("Akun Mahasiswi berhasil ditambahkan.");
-    }
+    private List<Mahasiswi> daftarMahasiswi = new ArrayList<>();
 
     @Override
     public void registerMahasiswi(String nama, String asrama, String nomorKamar) {
-
+        Mahasiswi mahasiswi = new Mahasiswi(nama, asrama, nomorKamar);
+        daftarMahasiswi.add(mahasiswi);
+        System.out.println("Akun mahasiswi berhasil didaftarkan!");
     }
 
     @Override
-    public Mahasiswi[] getAllMahasiswi() {
-        return daftarMahasiswi.toArray(new Mahasiswi[0]);
-    }
-
-    @Override
-    public Boolean editMahasiswi(Integer id, String nama, String asrama, String nomorKamar) {
-        return null;
+    public List<Mahasiswi> getAllMahasiswi() {
+        return daftarMahasiswi;
     }
 }
