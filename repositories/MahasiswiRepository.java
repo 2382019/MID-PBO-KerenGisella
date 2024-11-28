@@ -5,7 +5,7 @@ import entities.Mahasiswi;
 public interface MahasiswiRepository {
     Mahasiswi[] getAll();
 
-    void add (Mahasiswi mahasiswi);
+    public void addMahasiswi(Mahasiswi mahasiswi);
 
     void add (Mahasiswi mahasiswi);
 
