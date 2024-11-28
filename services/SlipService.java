@@ -1,19 +1,28 @@
 package services;
 
 import entities.Slip;
+import entities.Mahasiswi;
+import java.util.List;
 
 public interface SlipService {
-    void submitSlip(Slip slip);
+    // Method to submit a new Slip
+    void submitSlip(Mahasiswi mahasiswi, String jenisSlip, String alasan, String tanggalKeluar);
 
-    void submitSlip(Slip slip);
+    // Method to approve a pending Slip
+    void approveSlip(int slipIndex);
 
-    Boolean approveSlip (Integer id);
-    Boolean rejectSLip (Integer id);
+    // Method to get all pending slips
+    List<Slip> getPendingSlips();
 
-    Boolean rejectSlip(Integer slipId);
+    // Method to view all the slip notifications (approved or pending)
+    void viewSlipNotifications();
 
-    Boolean recordReturnTime(Integer slipId, String tanggalKembali, String waktuKembali);
+    // Method to record return time for an approved slip
+    void recordReturnTime(int slipIndex, String tanggalKembali, String waktuKembali);
 
-    Slip[] filterSlipsByType (String jenisSlip);
-    Slip[] filterSlipsByApprovalStatus(Boolean isApproved);
+    // Method to filter slips by type
+    List<Slip> filterSlipsByType(String jenisSlip);
+
+    // Method to filter slips by approval status
+    List<Slip> filterSlipsByStatus(boolean status);
 }

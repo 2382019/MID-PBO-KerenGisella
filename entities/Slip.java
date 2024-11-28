@@ -17,6 +17,9 @@ public class Slip {
         this.statusPersetujuan = statusPersetujuan;
     }
 
+    public Slip(Mahasiswi mahasiswi, String jenisSlip, String alasan, String tanggalKeluar) {
+    }
+
     public Mahasiswi getMahasiswi() {
         return mahasiswi;
     }
